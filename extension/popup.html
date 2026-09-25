@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#090c15" />
+  <title>Ears — Audio Lab</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+        <div><div class="brand-name">ears<span>®</span></div><div class="brand-caption">PERSONAL AUDIO LAB</div></div>
+      </div>
+      <div class="version-pill"><span class="status-dot"></span> FIREFOX EDITION</div>
+    </header>
+
+    <section class="hero-card">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="eyebrow-line"></span> SOUND, SHAPED BY YOU</div>
+        <h1>Make it<br /><em>sound</em> right.</h1>
+        <p>Precision equalizer for your everyday listening.</p>
+      </div>
+      <div class="hero-orbit" aria-hidden="true"><div class="orbit orbit-a"></div><div class="orbit orbit-b"></div><div class="orbit-core">E</div><div class="orbit-spark"></div></div>
+      <div class="hero-glow"></div>
+    </section>
+
+    <section class="capture-notice" role="status">
+      <div class="notice-icon">i</div>
+      <div><strong>Обработка HTML-аудио</strong><p>Эквалайзер подключается к элементам audio/video страницы. Защищённые потоки и звук вне HTML-медиаплееров могут быть недоступны.</p></div>
+    </section>
+
+    <nav class="tabs" aria-label="Разделы">
+      <button class="tab-button active" data-panel="controlsPanel"><span class="tab-icon">⌁</span> Эквалайзер</button>
+      <button class="tab-button" data-panel="guidePanel"><span class="tab-icon">✳</span> Как это работает</button>
+      <button class="tab-button" data-panel="tabsPanel"><span class="tab-icon">▤</span> Вкладки <span class="count-badge" id="activeCount">0</span></button>
+      <button class="tab-button appearance-tab" data-panel="appearancePanel"><span class="tab-icon">✦</span> Внешний вид</button>
+    </nav>
+
+    <section id="controlsPanel" class="panel active">
+      <div class="section-heading"><div><div class="eyebrow">TONE CONTROL</div><h2>Твой звук</h2></div><div class="heading-actions"><button id="toggleEqButton" class="eq-toggle" aria-pressed="true"><span class="toggle-track"><i></i></span><span id="toggleEqLabel">EQ включён</span></button><button id="resetFiltersButton" class="text-button">Сброс к нулю <span>↺</span></button><button id="restoreDefaultsButton" class="text-button">Исходные <span>⟲</span></button></div></div>
+      <div class="eq-card">
+        <div class="eq-meta"><span>УРОВЕНЬ · dB</span><span class="eq-range">−18 <i></i> +18</span></div>
+        <div class="eq-graph-wrap"><div class="db-scale"><span>+18</span><span>+9</span><span>0</span><span>−9</span><span>−18</span></div><svg id="eqSvg" viewBox="0 0 600 300" role="img" aria-label="График эквалайзера"></svg></div>
+        <div class="freq-scale"><span>10 Hz</span><span>100 Hz</span><span>1 kHz</span><span>10 kHz</span><span>30 kHz</span></div>
+        <div class="eq-footer"><span><i class="legend-dot violet"></i>Полочные фильтры</span><span><i class="legend-dot blue"></i>Полосовые фильтры</span><span class="drag-hint">Тяни точку или меняй значение ниже</span></div>
+      </div>
+      <div id="bandControls" class="band-controls" aria-label="Настройка полос эквалайзера"></div>
+      <div class="preset-heading"><div><div class="eyebrow">QUICK SOUND PROFILES</div><h2>Готовые пресеты</h2></div></div>
+      <div id="builtinPresetSpan" class="preset-chips builtin-presets"></div>
+      <div class="preset-heading user-preset-heading"><div><div class="eyebrow">YOUR COLLECTION</div><h2>Мои пресеты</h2></div><button id="bassBoostButton" class="bass-preset"><span>♫</span> Bass boost</button></div>
+      <div id="userPresetSpan" class="preset-chips"></div>
+      <div class="preset-tools"><input id="presetNameInput" type="text" placeholder="Название пресета" aria-label="Название пресета" /><button id="savePresetButton" class="icon-button" title="Сохранить">＋</button><button id="deletePresetButton" class="icon-button quiet" title="Удалить">−</button></div>
+      <div class="file-tools"><button id="exportPresetsButton" class="subtle-button">↥ Экспорт</button><button id="importPresetsButton" class="subtle-button">↧ Импорт</button><input type="file" id="importPresetsFile" accept="application/json,.json" /></div>
+      <div class="gain-row"><div><span class="eyebrow">OUTPUT</span><strong>Общая громкость</strong></div><span class="gain-value" id="gainValue">100%</span><input id="gainSlider" type="range" min="0" max="200" value="100" aria-label="Общая громкость" /></div>
+      <button id="eqTabButton" class="primary-button"><span>◉</span><span class="button-label">EQ текущей вкладки</span><span class="button-arrow">↗</span></button>
+    </section>
+
+    <section id="guidePanel" class="panel guide-panel">
+      <div class="section-heading"><div><div class="eyebrow">QUICK GUIDE</div><h2>Точная настройка</h2></div><div class="guide-mark">✳</div></div>
+      <article class="guide-card"><span class="guide-number">01</span><div><h3>Форма звучания</h3><p>Точки управляют полосами частот. Подними точку, чтобы усилить диапазон, опусти — чтобы приглушить. Перетаскивай по горизонтали, чтобы менять частоту.</p></div></article>
+      <article class="guide-card"><span class="guide-number">02</span><div><h3>Сохраняй свои сочетания</h3><p>Введи название и нажми «＋», чтобы сохранить настройку. Пресеты можно экспортировать в JSON и перенести на другое устройство.</p></div></article>
+      <article class="guide-card limitation-card"><span class="guide-number">!</span><div><h3>Совместимость</h3><p>Обрабатываются доступные элементы audio/video. Некоторые сайты используют защищённые или изолированные плееры, которые расширение не может подключить.</p></div></article>
+    </section>
+
+    <section id="tabsPanel" class="panel tabs-panel">
+      <div class="section-heading"><div><div class="eyebrow">SESSION MANAGER</div><h2>Активные вкладки</h2></div><div class="guide-mark">▤</div></div>
+      <div id="eqTabList" class="active-tabs-list"><div class="empty-state"><span>◌</span><strong>Пока пусто</strong><p>Вкладки появятся здесь после подключения обработки звука.</p></div></div>
+    </section>
+
+    <section id="appearancePanel" class="panel appearance-panel">
+      <div class="section-heading"><div><div class="eyebrow">MAKE IT YOURS</div><h2>Твоя тема</h2></div><div class="guide-mark">✦</div></div>
+      <p class="appearance-intro">Настрой акценты и градиент. Изменения применяются сразу и сохраняются для следующего запуска.</p>
+      <div class="theme-grid" role="group" aria-label="Готовые темы">
+        <button class="theme-card" data-theme="aurora"><span class="theme-swatch" style="--swatch-a:#b59cff;--swatch-b:#79e4e5"></span><strong>Аврора</strong><small>Violet · cyan</small></button>
+        <button class="theme-card" data-theme="sunset"><span class="theme-swatch" style="--swatch-a:#ff8a75;--swatch-b:#ffc66d"></span><strong>Закат</strong><small>Coral · amber</small></button>
+        <button class="theme-card" data-theme="ocean"><span class="theme-swatch" style="--swatch-a:#55c8ff;--swatch-b:#657bff"></span><strong>Океан</strong><small>Blue · indigo</small></button>
+        <button class="theme-card" data-theme="forest"><span class="theme-swatch" style="--swatch-a:#72e0a4;--swatch-b:#b8df70"></span><strong>Лес</strong><small>Mint · lime</small></button>
+      </div>
+      <div class="custom-theme-card">
+        <div class="custom-theme-heading"><div><span class="eyebrow">CUSTOM STUDIO</span><h3>Собственный градиент</h3></div><span class="studio-mark">✧</span></div>
+        <label class="color-control"><span>Первый цвет</span><input id="themeColorA" type="color" value="#b59cff" /></label>
+        <label class="color-control"><span>Второй цвет</span><input id="themeColorB" type="color" value="#79e4e5" /></label>
+        <div class="gradient-preview" id="gradientPreview"><span>LIVE PREVIEW</span></div>
+        <button id="applyCustomTheme" class="primary-button theme-apply"><span>✦</span><span class="button-label">Применить мой стиль</span><span class="button-arrow">↗</span></button>
+      </div>
+      <button id="resetTheme" class="text-button theme-reset">Вернуть тему Аврора ↺</button>
+    </section>
+
+    <div id="requiresProDiv" class="toast" aria-live="polite"></div>
+    <footer class="footer"><span>MADE FOR YOUR EARS <span class="footer-heart">♥</span></span><a id="fullscreen-link" href="#">Открыть отдельно ↗</a></footer>
+  </main>
+  <script src="popup.js"></script>
+</body>
+</html>
